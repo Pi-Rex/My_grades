@@ -1,0 +1,81 @@
+#LIBRARIES
+import pandas as pd
+import numpy as np
+
+#FUNCTIONS
+#Weighted average
+def waverage(file):
+    list_grades=[]
+    list_CFU=[]
+    list_summ=[]
+    average=0
+    num=0
+    sum_CFU=0
+    for n in file[1]:
+        list_grades+=[n]
+    #print(list_grades)
+    for n in file[2]:
+        list_CFU+=[n]
+    #print(list_CFU)
+    for n in list_CFU:
+        list_summ+=[list_grades[num]*n]
+        if list_grades[num]!=0:
+            sum_CFU+=n
+        num+=1
+    #print(list_summ)
+    average=sum(list_summ)/sum_CFU
+    return average
+def xgrade (file, media):
+    list_grades=[]
+    list_CFU=[]
+    list_summ=[]
+    num=0
+    sum_CFU=0
+    cfu_r=0
+    voto=0
+    for n in file[1]:
+        list_grades+=[n]
+    for n in file[2]:
+        list_CFU+=[n]   
+    for n in list_CFU:
+        list_summ+=[list_grades[num]*n]
+        if list_grades[num]!=0:
+            sum_CFU+=n
+        else:
+            cfu_r+=n
+        num+=1
+    #average=sum(list_summ)/sum_CFU
+    grade=(media*sum(list_CFU)-sum(list_summ))/cfu_r
+    return grade
+def maxaverage(file):
+    list_grades=[]
+    list_CFU=[]
+    list_summ=[]
+    for n in file[1]:
+        if n!=0:    
+            list_grades+=[n]
+        else:
+            n=30
+            list_grades+=[n]
+    for n in file[2]:
+        list_CFU+=[n]
+    num=0
+    for n in list_CFU:
+        list_summ+=[list_grades[num]*n]
+        num+=1    
+    maxaverag=sum(list_summ)/sum(list_CFU)
+    return maxaverag
+
+#PROGRAM
+#read CSV
+file_DF = pd.read_csv("grades.csv", sep=',', header = None, na_values='null', skiprows=1)
+#replane the na value with 0
+file_DF[1] = file_DF[1].replace(np.nan, 0)
+print(file_DF)
+average = waverage(file_DF)
+objective=input("What is the grade average you would like to achieve?")
+grade=xgrade(file_DF, float(objective))
+max_reachable_average=maxaverage(file_DF)
+print("Current average:", average)
+print("To achieve the desired average you should get a grade equal to or higher than:", grade)
+print("The highest average you could achieve (getting 30 on each exam) is ", max_reachable_average)
